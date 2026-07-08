@@ -1,0 +1,107 @@
+Rashinban for AI - Changelog (English)
+=======================================
+
+v0.5.0 (MCP server)
+------
+Focus: Multiple AI agents can now hold the same compass at once.
+
+Multi-agent support (major MCP server overhaul)
+- MCP transport changed from stdio to Streamable HTTP
+  (http://127.0.0.1:3766/mcp). The server is now a single persistent
+  process that multiple AI agents can connect to simultaneously.
+  (With stdio, each agent spawned its own server process and they
+  fought over the WebSocket port 3765, so effectively only one agent
+  could use the tool at a time.)
+- Session isolation: each agent gets its own MCP session and tool
+  state.
+- DOM change fan-out: dom_changed events are now replicated into
+  every connected session's queue. get_dom_changes consumes only the
+  caller's own queue (previously first-come-first-served, one agent
+  drained the shared queue). Per-session queue cap: 200 entries
+  (oldest dropped on overflow, reported via droppedCount).
+- Per-agent michishirube storage: michishirube.json is now a map
+  { agents: { <agent_id>: entry } }. save/get/clear_michishirube
+  accept an agent_id parameter (defaults to a session-specific id).
+  Old single-entry files are migrated to agents.default automatically;
+  existing data is preserved.
+- New tool: list_michishirube (lists agent_id, saved_at, goal,
+  status).
+- get_ui_elements now accepts clientId (from list_connected_tabs) to
+  target a specific tab, so different agents can work on different
+  tabs in parallel.
+
+Security
+- The MCP HTTP endpoint binds to localhost (127.0.0.1) only, with
+  DNS-rebinding protection (Host header validation) enabled.
+- The extension-side 3-layer security (localhost bind, extension ID
+  verification, token auth) is unchanged.
+
+Compatibility
+- No changes to the Chrome extension; no schema changes.
+- ACTION REQUIRED: update your AI agent's MCP config from the stdio
+  form (command: node ...) to the HTTP form
+  (url: http://127.0.0.1:3766/mcp). See the user guide.
+- stdio transport is removed (use a bridge such as mcp-remote if you
+  need it).
+
+
+v0.1.1
+------
+Focus: Richer, safer element labels.
+
+Added / Improved
+- Accessible label resolution for interactive elements. The `label`
+  field is now resolved the way an accessibility tree would, in this
+  priority order:
+    1. aria-label
+    2. aria-labelledby (referenced element text is resolved)
+    3. Associated <label> (both `for=` and wrapping <label>, via el.labels)
+    4. Button text / value (for <button> and input[submit|button|reset])
+    5. placeholder
+    6. title
+    7. alt (image buttons / contained images)
+    8. textContent (non form-control elements only)
+    9. name (last-resort identifier)
+- Submit / button / reset inputs now expose their `value` as the label
+  (e.g. <input type="submit" value="Send"> -> label "Send"), which was
+  previously empty.
+- Form fields whose visible label comes from an associated <label>
+  element (a very common pattern) now report that label text instead of
+  an empty string.
+- Label strings are whitespace-normalized and capped at 80 characters.
+
+Design boundary (privacy)
+- The distinction between "meaning" and "content" is now enforced in
+  code: an element's affordance label is provided, but the value typed
+  into a text field (user content) is never returned.
+    * Button `value` IS returned (it is a label, e.g. "Send").
+    * Text input `value` is NOT returned (it is user-entered content).
+    * <select> option text is NOT used as a label (would leak content).
+  This keeps the project's "never pass page content, only where to act"
+  principle intact while fixing the "which button is which" problem.
+
+Compatibility
+- No schema change. The output object keeps the same shape; only the
+  `label` field is now populated more completely. MCP server and the
+  michishirube (waypoint) integration are unchanged. Existing AI-side
+  parsing continues to work.
+
+Not included in this release (deferred by design)
+- Automatic "which form step am I on" detection in the michishirube ENV
+  block (unreliable across arbitrary step UIs; conflicts with the
+  "do not fill unobserved fields by guessing" principle).
+- A dedicated standalone `name` semantic field (kept as a label
+  fallback for now to preserve schema stability).
+
+
+v0.1.0
+------
+- Initial release.
+- Phase 1: Extract interactive elements (CSS selector, coordinates,
+  state) and element type hints (e.g. date-picker detection).
+- Phase 2: Local MCP server over WebSocket, with reconnect and
+  exponential backoff.
+- Phase 3: MutationObserver-based dynamic element detection and
+  notification (debounced).
+- Phase 4: Three-layer security (localhost-only bind, Chrome extension
+  ID verification, token authentication).
