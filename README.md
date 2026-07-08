@@ -10,3 +10,24 @@ Instead of forcing AI to parse bloated DOM trees or process heavy screenshots, i
 * **Hybrid Monitoring** — The extension watches the page continuously via MutationObserver, but only pushes updates to the MCP server on request (debounced). You get real-time accuracy without flooding the connection.
 * **Resilient WebSocket Connection** — Automatic reconnection with exponential backoff (1s → 2s → 4s...) keeps the bridge alive through sleep, server restarts, or network drops — silently, with no missed notifications.
 * **Defense in Depth** — Three independent security layers: localhost-only binding, Chrome extension ID verification, and token authentication.
+
+## 🛠️ Tech Stack & Architecture
+* **Frontend:** Chrome Extension (Manifest V3, JavaScript / MutationObserver)
+* **Backend:** Local MCP Server (WebSocket)
+* **Supported AI Environments:** Works smoothly with local LLM setups (e.g., LM Studio) and custom MCP-compatible AI agents.
+
+## ⚠️ Current Limitations
+* Does not support file upload fields due to browser security restrictions.
+* Cannot bypass reCAPTCHA/anti-bot systems.
+
+---
+
+## 📦 Repository
+
+[https://github.com/fukyou-jpn/rashinban-for-ai](https://github.com/fukyou-jpn/rashinban-for-ai)
+
+## 📄 License
+
+This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
+See the [LICENSE](LICENSE) file for details.
+
