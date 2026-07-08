@@ -31,3 +31,6 @@ Instead of forcing AI to parse bloated DOM trees or process heavy screenshots, i
 This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
 See the [LICENSE](LICENSE) file for details.
 
+## Related Projects
+
+- Rashinban MCP Server
