@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/羅針盤精緻ver.png" width="180">
+  <img src="images/羅針盤精緻ver.png" width="180">
 </p>
 
 # Rashinban for AI 🧭
