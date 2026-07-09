@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/images/羅針盤精緻ver.png" width="180">
+</p>
+
 # Rashinban for AI 🧭
 
 **Rashinban for AI** is an ultra-lightweight Chrome extension that acts as a precision bridge between web UIs and AI agents — cutting the tokens your AI spends on every page, and making its browser actions faster.
