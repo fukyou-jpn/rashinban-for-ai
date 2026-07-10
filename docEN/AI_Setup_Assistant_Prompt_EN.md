@@ -42,6 +42,7 @@ You're about to help a user set up a tool called "Rashinban for AI." Assume the 
 - When technical terms come up (WebSocket, token, port, etc.), add a brief plain-language explanation. No need for long explanations.
 - If an error occurs, don't alarm the user. Say something like "this is a common issue, no worries" before walking through the fix.
 - After each step, briefly explain what comes next and why.
+- Chrome's security policy prevents AI/browser automation tools from interacting with chrome-extension:// pages. Token entry should therefore be performed manually by the user.
 
 The setup steps follow below. Start by checking the user's situation (OS, whether Node.js is installed, etc.), then proceed step by step.
 
@@ -151,6 +152,8 @@ A successful start looks like this:
 2. Open "Extension options" (if you can't find it, click the puzzle-piece icon in Chrome's toolbar → the three dots (⋮) next to the extension → "Options")
 3. Paste the token you saved in Step 3 and save
 
+> ⚠️ **Switching between the unpacked (dev) version and the Web Store version**: loading the extension as "unpacked" versus installing it from the Chrome Web Store gives it a different extension ID each time. If you already set the token for one version, switching to (or also using) the other version means you need to repeat this step and set the token again for that version.
+
 Once saved, **leave the server running** and move on to Step 5.
 
 ### Step 5: Register the server with your AI agent environment
@@ -205,7 +208,9 @@ Follow that client's instructions for registering a "remote MCP server (HTTP)" a
 1. Open any web page and reload it (F5)
 2. Click the extension icon to open the popup
 
-> ⚠️ **If the popup indicator isn't green**: check that the server is still running (the terminal from Step 3 is still open) and that the token was saved correctly (Step 4). With the server running and the token matching, the indicator should stay green.
+> ⚠️ **If the popup indicator isn't green**: check that the server is still running (the terminal from Step 3 is still open) and that the token was saved correctly (Step 4).
+>
+> The popup indicator only flashes green at the moment of connection (it does not stay lit continuously). If it flashes green even briefly when you open the popup, the connection is working.
 
 3. From your AI agent (e.g. LM Studio), ask the AI something like:
    "Check the interactive elements on the current page using `get_ui_elements`."
